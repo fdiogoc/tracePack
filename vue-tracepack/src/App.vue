@@ -1,18 +1,24 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3 + TypeScript + Vite" />
+  <div>
+    <MyHeader></MyHeader>
+    <router-view></router-view>
+  </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
-import HelloWorld from './components/HelloWorld.vue'
-
-export default defineComponent({
-  name: 'App',
+<script>
+import MyHeader from "./components/Header.vue";
+import { useStore } from "vuex";
+export default {
   components: {
-    HelloWorld
-  }
-})
+    MyHeader,
+  },
+  setup() {
+    const store = useStore();
+    // const dispatchEvents = () => store.dispatch("getPositions");
+    // dispatchEvents();
+    return {};
+  },
+};
 </script>
 
 <style>
