@@ -2,13 +2,10 @@
   <div
     class="
       flex flex-col
-      max-w-md
+       max-w-xl
       px-4
       py-8
       bg-white
-      rounded-lg
-      shadow
-      dark:bg-gray-800
       sm:px-6
       md:px-8
       lg:px-10
@@ -24,12 +21,12 @@
             <div class="container">
               <div class="pb-5">
                 <div class="text-center pb-3">
-                  <h5 class="authBtn">Registrar</h5>
+                  <h5 class="authBtn">Nova posição</h5>
 
                   <hr />
                 </div>
 
-                <form @submit.prevent="register">
+                <form @submit.prevent="create">
                   <div class="form-group flex flex-col mb-2">
                     <input
                       type="text"
@@ -50,7 +47,7 @@
                         shadow-sm
                         text-base
                         focus:outline-none
-                        focus:ring-2 focus:ring-purple-600
+                        focus:ring-2 focus:ring-green-600
                         focus:border-transparent
                       "
                       placeholder="Name"
@@ -62,8 +59,8 @@
                   </div>
                   <div class="form-group flex flex-col mb-2">
                     <input
-                      type="email"
-                      v-model="email"
+                      type="text"
+                      v-model="color"
                       class="
                         form-control
                         rounded-lg
@@ -80,20 +77,28 @@
                         shadow-sm
                         text-base
                         focus:outline-none
-                        focus:ring-2 focus:ring-purple-600
+                        focus:ring-2 focus:ring-green-600
                         focus:border-transparent
                       "
-                      placeholder="Email"
-                      name="email"
+                      placeholder="Cor"
+                      name="color"
                     />
-                    <span class="text-danger">
-                      {{ emailError }}
-                    </span>
+
+                    <input
+                      v-model="color"
+                      type="color"
+                      class="
+                        form-control
+                        rounded-lg
+                        border border-gray-300
+                        w-full
+                      "
+                    />
                   </div>
                   <div class="form-group flex flex-col mb-2">
-                    <input
-                      type="password"
-                      v-model="password"
+                    <textarea
+                      rows="15"
+                      v-model="json"
                       class="
                         form-control
                         rounded-lg
@@ -101,55 +106,21 @@
                         flex-1
                         appearance-none
                         border border-gray-300
-                        w-full
-                        py-2
-                        px-4
                         bg-white
                         text-gray-700
                         placeholder-gray-400
                         shadow-sm
                         text-base
                         focus:outline-none
-                        focus:ring-2 focus:ring-purple-600
+                        focus:ring-2 focus:ring-green-600
                         focus:border-transparent
                       "
-                      placeholder="Password"
-                      autocomplete="new-password"
-                      name="password"
-                    />
+                      placeholder="GeoJSON"
+                      name="json"
+                    ></textarea>
+
                     <span class="text-danger">
-                      {{ passwordError }}
-                    </span>
-                  </div>
-                  <div class="form-group flex flex-col mb-2">
-                    <input
-                      type="password"
-                      v-model="password_confirmation"
-                      class="
-                        form-control
-                        rounded-lg
-                        border-transparent
-                        flex-1
-                        appearance-none
-                        border border-gray-300
-                        w-full
-                        py-2
-                        px-4
-                        bg-white
-                        text-gray-700
-                        placeholder-gray-400
-                        shadow-sm
-                        text-base
-                        focus:outline-none
-                        focus:ring-2 focus:ring-purple-600
-                        focus:border-transparent
-                      "
-                      placeholder="Confirm Password"
-                      autocomplete="new-password"
-                      name="password_confirmation"
-                    />
-                    <span class="text-danger">
-                      {{ password_confirmationError }}
+                      {{ jsonError }}
                     </span>
                   </div>
 
@@ -174,18 +145,10 @@
                       rounded-lg
                     "
                   >
-                    Resgistrar
+                    Criar
                   </button>
                 </form>
               </div>
-              <p>
-                Já possui conta?
-                <router-link
-                  class="text-sm text-green-500 underline hover:text-green-700"
-                  to="/login"
-                  >Login</router-link
-                >
-              </p>
             </div>
           </div>
         </div>
@@ -196,7 +159,7 @@
 
 <script>
 import { useForm, useField } from "vee-validate";
-import { object, string, ref as yupRef } from "yup";
+import { object, string } from "yup";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 export default {
@@ -204,37 +167,27 @@ export default {
     const store = useStore();
     const router = useRouter();
     const schema = object({
-      email: string().required().email(),
-      password: string().required().min(8),
-      password_confirmation: string().oneOf(
-        [yupRef("password"), null],
-        "Passwords must match"
-      ),
       name: string().required(),
+      json: string().required().min(8),
+      color: string(),
     });
     useForm({
       validationSchema: schema,
     });
     // No need to define rules for fields
-    const { value: email, errorMessage: emailError } = useField("email");
-    const {
-      value: password_confirmation,
-      errorMessage: password_confirmationError,
-    } = useField("password_confirmation");
-    const { value: password, errorMessage: passwordError } =
-      useField("password");
+    const { value: json, errorMessage: jsonError } = useField("json");
     const { value: name, errorMessage: nameError } = useField("name");
-    const register = async () => {
+    const { value: color } = useField("color");
+    const create = async () => {
       try {
-        await store.dispatch("register", {
-          email: email.value,
-          password: password.value,
+        await store.dispatch("createPosition", {
+          color: color.value,
+          geoJson: json.value,
           name: name.value,
         });
 
         return router.push({
-          name: "user",
-          params: { id: store.state.user.id },
+          name: "map",
         });
       } catch (err) {
         console.log(err);
@@ -242,15 +195,12 @@ export default {
     };
 
     return {
-      register,
-      emailError,
-      email,
       nameError,
       name,
-      passwordError,
-      password,
-      password_confirmationError,
-      password_confirmation,
+      json,
+      jsonError,
+      create,
+      color,
     };
   },
 };

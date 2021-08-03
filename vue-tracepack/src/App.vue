@@ -1,21 +1,25 @@
 <template>
-  <div>
-    <MyHeader></MyHeader>
+  <div class="bg-green-100 min-h-screen">
+    <Header></Header>
+    
     <router-view></router-view>
   </div>
 </template>
 
 <script>
-import MyHeader from "./components/Header.vue";
+import Header from "./components/Header.vue";
 import { useStore } from "vuex";
 export default {
   components: {
-    MyHeader,
+    Header,
   },
   setup() {
     const store = useStore();
-    // const dispatchEvents = () => store.dispatch("getPositions");
-    // dispatchEvents();
+    const dispatchEvents = () => {
+        store.dispatch("getPositions")
+        store.dispatch("isLoggedIn")
+      };
+    dispatchEvents();
     return {};
   },
 };
@@ -26,8 +30,6 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+
 }
 </style>

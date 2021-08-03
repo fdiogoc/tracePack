@@ -13,7 +13,7 @@ export default class Position extends BaseModel
   public color: string;
 
   @column()
-  public geoJSON: string;
+  public json?: JSON;
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

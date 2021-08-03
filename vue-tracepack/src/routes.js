@@ -4,8 +4,9 @@ import store from "./store";
 import Home from "./views/Home.vue";
 import Login from "./views/Login.vue";
 import User from "./views/dashboard/User.vue";
-import Add from "./views/dashboard/Add.vue";
 import Register from "./views/Register.vue";
+import Position from "./views/Position.vue";
+import Polygon from "./views/Polygon.vue";
 
 
 // mode: 'history',
@@ -33,8 +34,7 @@ const routes = [
     component: User,
     meta: { requiresAuth: true },
     beforeEnter(to, from, next) {
-      if (
-        store.getters["isUser"] &&
+      if (store.getters.isLoggedIn &&
         parseInt(store.state.user.id) === parseInt(to.params.id)
       ) {
         next();
@@ -43,7 +43,8 @@ const routes = [
           name: "login",
         });
       }
-    },
+    }, 
+   
   // },
   // {
   //   path: "/admin",
@@ -70,6 +71,17 @@ const routes = [
   //     }
   //   },
   },
+  {
+    path: "/position",
+    name: "position",
+    component: Position,
+    meta: { requiresAuth: true },
+    },  {
+    path: "/polygon",
+    name: "polygon",
+    component: Polygon,
+    meta: { requiresAuth: true },
+    },
 ];
 
 const router = createRouter({ history: createWebHistory(), routes });
@@ -77,6 +89,7 @@ const router = createRouter({ history: createWebHistory(), routes });
 // });
 
 router.beforeEach((to, from, next) => {
+  debugger;
   to.matched.some((record) => {
     console.log(record);
     return record.meta.requiresAuth;

@@ -2,7 +2,7 @@
   <div class="text-center banner">
     <div class="container p-5">
       <div class="p-5">
-        <h1>User DashBoard</h1>
+        <h1> DashBoard</h1>
       </div>
     </div>
 

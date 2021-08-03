@@ -1,5 +1,5 @@
 import Http from "./clients/AxiosClient";
-const resource = "/positions";
+const resource = "/position";
 
 export default {
   get() {

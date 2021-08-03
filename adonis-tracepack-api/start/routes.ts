@@ -28,4 +28,22 @@ Route.group(() =>
     Route.post('login', 'AuthController.login')
   }).prefix('auth')
 
+  Route.group(() =>
+  {
+    Route.get('list', 'PositionController.positions')
+    Route.post('', 'PositionController.create')
+    Route.put('update', 'PositionController.update')
+    Route.put('delete', 'PositionController.delete')
+    Route.get('find', 'PositionController.find')
+  }).prefix('position').middleware('auth:api')
+
+  Route.group(() =>
+  {
+    Route.get('list', 'PolygonController.polygons')
+    Route.post('', 'PolygonController.create')
+    Route.put('update', 'PolygonController.update')
+    Route.put('delete', 'PolygonController.delete')
+    Route.get('find', 'PolygonController.find')
+  }).prefix('polygon').middleware('auth:api')
+
 }).prefix('api/v1')

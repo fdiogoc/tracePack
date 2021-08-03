@@ -9,7 +9,8 @@ const store = createStore({
     polygons: [],
     positions: [],
     user: [],
-    loggedIn: false,
+    token: localStorage.getItem('token') || '',
+    loggedIn: localStorage.getItem('token') ? true : false
   },
 
   actions: {
@@ -53,7 +54,8 @@ const store = createStore({
 
     async logout({ commit }) {
       try {
-        await AuthRepository.logout();
+        // await AuthRepository.logout();
+
         commit("STORE_LOGGED_OUT_USER", true);
         return true;
       } catch (error) {
@@ -70,7 +72,6 @@ const store = createStore({
   mutations: {
     STORE_LOGGED_IN_USER: (state, response) => {
       const { data } = response;
-
       if (data) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", data.user);
@@ -142,13 +143,7 @@ const store = createStore({
     getPolygon: (state) => (id) => {
       return state.polygons.find((event) => event.id == id);
     },
-
-    isAdmin: (state) => {
-      return state.user.is_admin;
-    },
-    isUser: (state) => {
-      return !state.user.is_admin;
-    },
+    isLoggedIn: state => !!state.token,
   },
 
   // strict: true
