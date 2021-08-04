@@ -17,7 +17,7 @@ export default {
     const store = useStore();
     const dispatchEvents = () => {
         store.dispatch("getPositions")
-        store.dispatch("isLoggedIn")
+        store.dispatch("getPolygons")
       };
     dispatchEvents();
     return {};

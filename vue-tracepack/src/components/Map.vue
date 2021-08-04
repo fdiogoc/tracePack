@@ -1,118 +1,158 @@
 <template>
-
   <div>
-    <div>
-      <span v-if="loading">Loading...</span>
-      <label for="checkbox">GeoJSON Visibility</label>
-      <input
-        id="checkbox"
-        v-model="show"
-        type="checkbox"
-      >
-      <label for="checkboxTooltip">Enable tooltip</label>
-      <input
-        id="checkboxTooltip"
-        v-model="enableTooltip"
-        type="checkbox"
-      >
-      <input
-        v-model="fillColor"
-        type="color"
-      >
-      <br>
-    </div>
-    <l-map
-      :zoom="zoom"
-      :center="center"
-      style="height: 500px; width: 100%"
-    >
-      <l-tile-layer
-        :url="url"
-        :attribution="attribution"
-      
-      />
-      <l-geo-json
-        v-if="show"
-        :geojson="geojson"
-        :options="options"
-        :options-style="styleFunction"
-      />
-      <l-marker :lat-lng="marker" />
-    </l-map>
+    <div class="flex flex-wrap mb-10 justify-center">
+      <label class="sm:mr-10 text-gray-700" for="position">
+        Posição
+        <select
+          id="position"
+          class="
+            block
+            w-52
+            py-2
+            px-3
+            border border-gray-300
+            bg-white
+            rounded-md
+            shadow-sm
+            focus:outline-none
+            focus:ring-primary-500
+            focus:border-primary-500
+          "
+          name="animals"
+        >
+          <option value="">Selecione uma posição</option>
+          <option
+            v-for="(position, i) in positionsList"
+            :key="i"
+            value="polygon.id"
+          >
+            {{ position.name }}
+          </option>
+        </select>
+      </label>
 
-    
+      <label class="text-gray-700" for="polygon">
+        Polígono
+        <select
+          id="polygon"
+          class="
+            block
+            w-52
+            py-2
+            px-3
+            border border-gray-300
+            bg-white
+            rounded-md
+            shadow-sm
+            focus:outline-none
+            focus:ring-primary-500
+            focus:border-primary-500
+          "
+          name="animals"
+        >
+          <option value="">Selecione um Polígono</option>
+          <option v-for="(polygon, i) in polygonsList" :key="i" value="pos.id">
+            {{ polygon.name }}
+          </option>
+        </select>
+      </label>
+    </div>
+    <l-map :zoom="zoom" :center="center" style="height: 500px" class="w-full">
+      <l-tile-layer :url="url" :attribution="attribution" />
+
+      <l-geo-json
+        :geojson="position.json"
+        :options="options"
+        v-for="(position, i) in positionsList"
+        :key="i"
+      />
+
+      <!-- 
+      <l-geo-json
+        :geojson="polygon.json"
+        v-for="(polygon, i) in polygonsList"
+        :key="i"
+      /> -->
+      <l-geo-json
+        :geojson="polygon.json"
+        v-for="(polygon, i) in polygonsList"
+        :key="i"
+        :options="getStyle(polygon.color)"
+      >
+        <l-popup>
+          {{ polygon.name }}
+        </l-popup>
+            <l-tooltip>
+         {{ polygon.name }}
+        </l-tooltip>
+      </l-geo-json>
+
+      <!-- <l-marker :lat-lng="marker" />
+          <l-marker :lat-lng="[0, 0]" draggable >
+        <l-tooltip>
+          lol
+        </l-tooltip>
+      </l-marker> -->
+    </l-map>
   </div>
 </template>
 
 <script>
 import { latLng } from "leaflet";
-import { LMap, LTileLayer, LMarker, LGeoJson } from "@vue-leaflet/vue-leaflet";
-
+import {
+  LMap,
+  LTileLayer,
+  LMarker,
+  LGeoJson,
+  LPopup,
+  LTooltip,
+} from "@vue-leaflet/vue-leaflet";
+import { useStore } from "vuex";
+import { computed } from "vue";
 export default {
   name: "Example",
   components: {
     LMap,
     LTileLayer,
     LGeoJson,
-    LMarker
+    LMarker,
+    LPopup,
+    LTooltip,
   },
+
   data() {
     return {
-      loading: false,
-      show: true,
-      enableTooltip: true,
-      zoom: 12,
+      zoom: 7,
       center: [-23.304453, -51.169582],
       geojson: null,
-      fillColor: "#e4ce7f",
-      url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       attribution:
         '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-      marker: latLng(-23.304453, -51.169582)
+      marker: latLng(-23.304453, -51.169582),
+
     };
   },
-  computed: {
-    options() {
-      return {
-        onEachFeature: this.onEachFeatureFunction
-      };
-    },
-    styleFunction() {
-      const fillColor = this.fillColor; // important! need touch fillColor in computed for re-calculate when change fillColor
-      return () => {
-        return {
-          weight: 2,
-          color: "#ECEFF1",
-          opacity: 1,
-          fillColor: fillColor,
-          fillOpacity: 1
-        };
-      };
-    },
-    onEachFeatureFunction() {
-      if (!this.enableTooltip) {
-        return () => {};
-      }
-      return (feature, layer) => {
-        layer.bindTooltip(
-          "<div>code:" +
-            feature.properties.code +
-            "</div><div>nom: " +
-            feature.properties.nom +
-            "</div>",
-          { permanent: false, sticky: true }
-        );
-      };
-    }
+  setup() {
+    const store = useStore();
+    const positionsList = computed(() => store.state.positions);
+    const polygonsList = computed(() => store.state.polygons);
+
+    return {
+      positionsList,
+      polygonsList,
+    };
   },
-  async created() {
-    this.loading = true;
-    // const response = await fetch("https://servicodados.ibge.gov.br/api/v3/malhas/municipios/4113700?formato=application/vnd.geo+json&qualidade=maxima")
-    //const response = await fetch("https://raw.githubusercontent.com/tbrugz/geodata-br/master/geojson/geojs-41-mun.json")
-    const response = await fetch("http://siscom.ibama.gov.br/geoserver/publica/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=publica:veg_naofloresta_aml_a&outputFormat=application%2Fjson")
-    const data = await response.json();
-    this.geojson = data;
-    this.loading = false;
+
+    methods: {
+    getStyle(color) {
+     return {
+        weight: 1,
+        color: "#ECEFF1",
+        opacity: 0.4,
+        fillColor: color ?? '#adad',
+        fillOpacity: 0.4,
+     }
+    }
   }
 };
 </script>

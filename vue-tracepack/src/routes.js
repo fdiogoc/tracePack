@@ -86,12 +86,11 @@ const routes = [
 
 const router = createRouter({ history: createWebHistory(), routes });
 
-// });
+
 
 router.beforeEach((to, from, next) => {
-  debugger;
+
   to.matched.some((record) => {
-    console.log(record);
     return record.meta.requiresAuth;
   });
   if (to.matched.some((record) => record.meta.requiresAuth)) {

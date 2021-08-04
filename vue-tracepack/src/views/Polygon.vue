@@ -189,7 +189,7 @@ export default {
         });
 
         return router.push({
-          name: "map",
+          name: "home",
         });
       } catch (err) {
         console.log(err);

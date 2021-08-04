@@ -1,5 +1,5 @@
 import Http from "./clients/AxiosClient";
-const resource = "/polygons";
+const resource = "/polygon";
 
 export default {
   get() {

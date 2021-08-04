@@ -30,7 +30,7 @@ Route.group(() =>
 
   Route.group(() =>
   {
-    Route.get('list', 'PositionController.positions')
+    Route.get('', 'PositionController.positions')
     Route.post('', 'PositionController.create')
     Route.put('update', 'PositionController.update')
     Route.put('delete', 'PositionController.delete')
@@ -39,7 +39,7 @@ Route.group(() =>
 
   Route.group(() =>
   {
-    Route.get('list', 'PolygonController.polygons')
+    Route.get('', 'PolygonController.polygons')
     Route.post('', 'PolygonController.create')
     Route.put('update', 'PolygonController.update')
     Route.put('delete', 'PolygonController.delete')

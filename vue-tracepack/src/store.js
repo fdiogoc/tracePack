@@ -17,7 +17,7 @@ const store = createStore({
     async getPositions({ commit }) {
       commit("STORE_POSITIONS", await PositionRepository.get());
     },    
-    async getPolygonss({ commit }) {
+    async getPolygons({ commit }) {
       commit("STORE_POLYGONS", await PolygonRepository.get());
     },
 
@@ -88,7 +88,7 @@ const store = createStore({
 
     STORE_POSITION: (state, response) => {
       const { data } = response;
-      state.positions.push(data.data);
+      state.positions.push(data);
     },
 
     UPDATE_POSITION: (state, response) => {
@@ -109,7 +109,7 @@ const store = createStore({
 
     STORE_POLYGON: (state, response) => {
       const { data } = response;
-      state.polygons.push(data.data);
+      state.polygons.push(data);
     },
 
     UPDATE_POLYGONS: (state, response) => {

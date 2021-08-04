@@ -2,7 +2,7 @@
   <div
     class="
       flex flex-col
-       max-w-xl
+      max-w-xl
       px-4
       py-8
       bg-white
@@ -187,7 +187,7 @@ export default {
         });
 
         return router.push({
-          name: "map",
+           name: "home",
         });
       } catch (err) {
         console.log(err);

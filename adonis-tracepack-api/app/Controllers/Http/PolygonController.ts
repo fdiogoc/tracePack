@@ -9,7 +9,7 @@ export default class PolygonController
         return Polygon.query()
     }
 
-    public async Polygons({ auth }: HttpContextContract)
+    public async polygons({ auth }: HttpContextContract)
     {
         const polygons = await Polygon.query();
         console.log(polygons)
