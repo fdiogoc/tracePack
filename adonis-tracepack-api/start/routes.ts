@@ -31,6 +31,18 @@ Route.group(() =>
   Route.group(() =>
   {
     Route.get('', 'PositionController.positions')
+
+  }).prefix('position')
+
+  Route.group(() =>
+  {
+    Route.get('', 'PolygonController.polygons')
+
+  }).prefix('polygon')
+
+  Route.group(() =>
+  {
+
     Route.post('', 'PositionController.create')
     Route.put('update', 'PositionController.update')
     Route.put('delete', 'PositionController.delete')
@@ -39,7 +51,7 @@ Route.group(() =>
 
   Route.group(() =>
   {
-    Route.get('', 'PolygonController.polygons')
+
     Route.post('', 'PolygonController.create')
     Route.put('update', 'PolygonController.update')
     Route.put('delete', 'PolygonController.delete')

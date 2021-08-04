@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="flex flex-wrap mb-10 justify-center">
+    <div class=" hidden flex flex-wrap mb-10 justify-center">
       <label class="sm:mr-10 text-gray-700" for="position">
         Posição
         <select
@@ -65,14 +65,15 @@
         :options="options"
         v-for="(position, i) in positionsList"
         :key="i"
-      />
+            >
+        <l-popup>
+          {{ position.name }}
+        </l-popup>
+            <l-tooltip>
+         {{ position.name }}
+        </l-tooltip>
+      </l-geo-json>
 
-      <!-- 
-      <l-geo-json
-        :geojson="polygon.json"
-        v-for="(polygon, i) in polygonsList"
-        :key="i"
-      /> -->
       <l-geo-json
         :geojson="polygon.json"
         v-for="(polygon, i) in polygonsList"
@@ -87,12 +88,6 @@
         </l-tooltip>
       </l-geo-json>
 
-      <!-- <l-marker :lat-lng="marker" />
-          <l-marker :lat-lng="[0, 0]" draggable >
-        <l-tooltip>
-          lol
-        </l-tooltip>
-      </l-marker> -->
     </l-map>
   </div>
 </template>
